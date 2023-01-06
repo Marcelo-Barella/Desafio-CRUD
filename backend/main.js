@@ -245,53 +245,51 @@ init = async () => {
 
     if (Object.keys(payload)[0] == "categ_cod") {
       console.log("TAREFA")
-      try {
 
         var dataReformada = (moment(payload.tarefa_data)).tz('America/Sao_Paulo').format('YYYY-MM-DD')
+        var dataReformadaBR = (moment(payload.tarefa_data)).tz('America/Sao_Paulo').format('DD-MM-YYYY')
         var horaReformada = (moment(payload.tarefa_hora)).tz('America/Sao_Paulo').format('HH:mm:ss')
-
+        var categoriaSelected = await req.model.categoria.findOne({ where: { categ_cod: payload.categ_cod } }) // AQUI
         await req.model.tarefa.create({
           categ_cod: payload.categ_cod,
           tarefa_desc: payload.tarefa_desc,
           tarefa_data: dataReformada,
           tarefa_hora: horaReformada,
-          tarefa_status: payload.tarefa_status
-        }).then(result => req.model.email.create({
-          tarefa_cod: result.tarefa_cod,
-          email_desc: payload.email_desc
-        }))
+          tarefa_status: payload.tarefa_status // OI ERICK :D
+        }).then(result => {
+          var emailList = payload.email_desc.split(" ")
+          for (email in emailList) { req.model.email.create({
+            tarefa_cod: result.tarefa_cod,
+            email_desc: emailList[email]})
+            if (payload.tarefa_status == 'P') {
+
+              transporter.sendMail({
+                from: 'marcelo.marella22@gmail.com',
+                to: emailList[email],
+                subject: 'Nova Tarefa Agendada',
+                text: `
+              <<div style= " position: relative; margin: 0 20%; justify-content: center; ">
+          
+              <h3>${payload.tarefa_desc}</h3>
+              
+              <h4>Categoria: <strong>${categoriaSelected.categ_desc}</strong></h4> 
+              <h4>Data Agendada: <strong>${dataReformadaBR}</strong></h4>
+              <h4>Hora Agendada: <strong>${horaReformada}</strong></h4>
+                  <br>
+              </div>
+              `
+            })
+            
+            console.log('Email Enviado para '+emailList[email])
+          }
+        }
+        console.log(payload.tarefa_desc)
+        console.log(categoriaSelected.categ_desc)
+          })
 
         // var getCategoria = req.model.categoria.findAll({ where: { categ_cod: payload.categ_cod } })
 
-        if (payload.tarefa_status == 'P') {
-          try{
-          transporter.sendMail({
-            from: 'marcelo.marella22@gmail.com',
-            to: payload.email_desc,
-            subject: 'Nova Tarefa Agendada',
-            text: `
-          <<div style= " position: relative; margin: 0 20%; justify-content: center; ">
-      
-          <h3>Levantar Banco de dados</h3>
-          
-          <h4>Data Agendada: <strong>${dataReformada}</strong></h4>
-          <h4>Hora Agendada: <strong>${horaReformada}</strong></h4>
-              <br>
-          </div>
-          `
-        })
-        console.log('Email Enviado')
-        } catch (error) {
-            console.log(error)
-            res.status(500).json({})
-        }
-        }
-
-      } catch (error) {
-        console.log(error)
-        res.status(500).json({})
-      }
-    }
+        
 
     if (Object.keys(payload)[0] == "categ_desc") {
       console.log('CATEGORIA')
@@ -318,7 +316,8 @@ init = async () => {
         res.status(500).json({})
       }
     }
-  })
+  }
+})
 
   app.post('/edit', async function (req, res, next) {
     var payload = req.body

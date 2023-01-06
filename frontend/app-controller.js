@@ -8,7 +8,7 @@ app.controller('ControllerIndex', ['$scope', function ($scope) {
 
     $scope.teste = function () {
         console.log()
-
+        localStorage.removeItem('campos')
         document.getElementById('debug').click();
     }
 
@@ -126,8 +126,22 @@ $scope.filters();
 }]);
 app.controller('ControllerAdd', ['$scope', function ($scope) {
 
+    $scope.teste = function () {
+        console.log()
+        document.getElementById('debug').click();
+    }
+    
+    $scope.getCategorias = async () => {
+        var { data } = await axios.get('http://apidesafio.com.br/categorias');
+        angular.extend($scope, data);
+        $scope.teste()
+        console.log(data.listCategs[0].categ_cod)
+    }
+
+    $scope.getCategorias()
+    
     if (localStorage.campos) {
-        $scope.teste = 'Edit'
+        $scope.title = 'Edit'
 
         $scope.getCampos = async () => {
 
@@ -166,7 +180,7 @@ app.controller('ControllerAdd', ['$scope', function ($scope) {
         $scope.getCampos()
     } else {
 
-        $scope.teste = 'Insert'
+        $scope.title = 'Insert'
         $scope.setTarefa = async () => {
             $scope.newCampo = {
                 categ_cod: null,
@@ -175,7 +189,9 @@ app.controller('ControllerAdd', ['$scope', function ($scope) {
                 tarefa_hora: null,
                 tarefa_status: 'P',
                 
-                email_num: 1,
+                categ_cod : null,
+                categ_desc : null,
+
                 email_cod: null,
                 tarefa_cod: null,
                 email_desc: null
@@ -185,7 +201,7 @@ app.controller('ControllerAdd', ['$scope', function ($scope) {
         $scope.setCategoria = async () => {
             $scope.newCampo = {
                 categ_cod: null,
-                Categ_desc: null,
+                categ_desc: null,
             }
         }
 
@@ -199,5 +215,4 @@ app.controller('ControllerAdd', ['$scope', function ($scope) {
         }
 
     }
-
 }])
