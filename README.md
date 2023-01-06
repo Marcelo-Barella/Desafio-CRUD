@@ -1,0 +1,1 @@
+O foco não foi estilização, mas sim aprender as tecnologias utilizadas durante o desafio.

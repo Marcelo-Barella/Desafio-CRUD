@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="MyApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" />
+    <script src="/backend/app-controller.js"></script>
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
+
+    <title>Insert / Edit</title>
+</head>
+
+<body>
+    <div ng-controller="ControllerAdd">
+
+        <div class="containerADD">
+
+            <h1>Menu de {{teste}}</h1>
+<div class="box">
+            <form>
+                <input ng-model="newCampo.tarefa_cod" type="text" id="tarefa_cod" placeholder="Código da Tarefa"
+                    value="{{campos.tarefa_cod}}">
+                <br>
+                <input ng-model="newCampo.email_desc" type="text" id="email_desc" placeholder="Descrição"
+                    value="{{campos.email_desc}}">
+                <br>
+
+                <br>
+                <a href="../index.html"><button ng-click="addCampo()">Salvar</button></a>
+            </form>
+        </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
